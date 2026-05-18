@@ -1,8 +1,12 @@
 package com.ayse.todocompose.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.ayse.todocompose.data.ToDoDatabase
+import com.ayse.todocompose.data.repository.dataStore
 import com.ayse.todocompose.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
@@ -29,4 +33,11 @@ object DatabaseModule {
     @Provides
     fun provideDao(database: ToDoDatabase) = database.toDoDAO()
 
+    @Singleton
+    @Provides
+    fun provideDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return context.dataStore
+    }
 }
