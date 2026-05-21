@@ -10,7 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ayse.todocompose.R
@@ -90,6 +92,7 @@ fun ListFab(
     onFabClicked: (taskID: Int) -> Unit
 ) {
     FloatingActionButton(
+        modifier = Modifier.testTag("list_fab"),
         onClick = {
             onFabClicked(-1)
         },

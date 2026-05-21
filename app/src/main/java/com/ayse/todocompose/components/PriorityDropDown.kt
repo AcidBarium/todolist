@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -56,6 +57,7 @@ fun PriorityDropDown(
             .fillMaxWidth()
             .onGloballyPositioned { parentSize = it.size }
             .height(PRIORITY_DROP_DOWN_HEIGHT)
+            .testTag("priority_dropdown")
             .clickable { expanded = true }
             .border(
                 width = 1.dp,
