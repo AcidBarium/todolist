@@ -1,0 +1,929 @@
+{
+  "nodes": [
+    {
+      "id": "_ROOT_"
+    },
+    {
+      "id": "com.ayse.todocompose.Hilt_ToDoApplication.onCreate()"
+    },
+    {
+      "id": "com.ayse.todocompose.Hilt_MainActivity._initHiltInternal()"
+    },
+    {
+      "id": "com.ayse.todocompose.ToDoApplication.onCreate()"
+    },
+    {
+      "id": "com.ayse.todocompose.Hilt_MainActivity.onCreate(Bundle)"
+    },
+    {
+      "id": "com.ayse.todocompose.MainActivity.onCreate(Bundle)"
+    },
+    {
+      "id": "androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen()"
+    },
+    {
+      "id": "com.ayse.todocompose.MainActivity.setContent(Composable)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.<init>(ToDoRepository,DataStoreRepository)"
+    },
+    {
+      "id": "androidx.navigation.compose.rememberNavController()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme(Composable)"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.SetupNavigation(NavHostController,SharedViewModel)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.colors()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.typography()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.shapes()"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.Screens.<init>(NavHostController)"
+    },
+    {
+      "id": "androidx.navigation.compose.NavHost(NavHostController,String,Builder)"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.destination.listComposable(NavGraphBuilder,Int->Unit,SharedViewModel)"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.destination.taskComposable(NavGraphBuilder,Action->Unit,SharedViewModel)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateAction(Action)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListScreen(Action,Int->Unit,SharedViewModel)"
+    },
+    {
+      "id": "com.ayse.todocompose.util.toAction(String?)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.getSelectedTask(Int)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTaskFields(ToDoTask?)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.TaskScreen(ToDoTask?,Action->Unit,SharedViewModel)"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.Screens.list(Int)"
+    },
+    {
+      "id": "androidx.navigation.NavHostController.navigate(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.navigation.Screens.task(Action)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.handleDatabaseActions(Action)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.DisplaySnackbar(ScaffoldState,Action->Unit,Action->Unit,String,Action)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListAppBar(SharedViewModel,SearchAppBarState,String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListContent(RequestState,RequestState,SearchAppBarState,List,List,RequestState,Int->Unit,(Action,ToDoTask)->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListFab(Int->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListFab.onFabClicked(Int)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.HandleListContent(List,Int->Unit,(Action,ToDoTask)->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.EmptyContent()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.DisplayTasks(List,Int->Unit,(Action,ToDoTask)->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.RedBackground(Float)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.TaskItem(ToDoTask,Int->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.TaskItem.navigateToTaskScreen(Int)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.DefaultListAppBar(()->Unit,Priority->Unit,()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.SearchAppBar(String,String->Unit,()->Unit,String->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.ListAppBarAction(()->Unit,Priority->Unit,()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.persistSortState(Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.SearchAction(()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.SortAction(Priority->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.DeleteAllAction(()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.components.DisplayAlertDialog(String,String,Boolean,()->Unit,()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.components.PriorityItem(Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateSearchTextState(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateAppbarState(SearchAppBarState)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.searchDatabase(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.TaskAppBar(ToDoTask?,Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.TaskContent(String,String->Unit,String,String->Unit,Priority,Priority->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.validateFields()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.displayToast(Context)"
+    },
+    {
+      "id": "androidx.activity.compose.BackHandler(Boolean,()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.NewTaskAppBar(Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.ExistingTaskAppBar(ToDoTask,Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.BackAction(Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.AddAction(Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.CloseAction(Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.ExistingAppBarActions(ToDoTask,Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.DeleteAction(()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.task.UpdateAction(Action->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.components.PriorityDropDown(Priority,Priority->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTitle(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateDescription(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updatePriority(Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.getAllTasks()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.readSortState()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.getAllTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.DataStoreRepository.readSortState()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.addTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.deleteTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.deleteAllTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoTask.<init>(String,String,Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.addTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoTask.<init>(Int,String,String,Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.updateTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.deleteTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.deleteAllTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.searchDatabase(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.getSelectedTask(Int)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.DataStoreRepository.persistSortState(Priority)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.getAllTask()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.sortByLowPriority()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.sortByLowPriority()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.sortByHighPriority()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.sortByHighPriority()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.searchDatabase(String)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.getSelectedTask(Int)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.addTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.updateTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.deleteTask(ToDoTask)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDao.deleteAllTask()"
+    },
+    {
+      "id": "androidx.room.RoomDatabase.insert(ToDoTask)"
+    },
+    {
+      "id": "androidx.room.RoomDatabase.update(ToDoTask)"
+    },
+    {
+      "id": "androidx.room.RoomDatabase.delete(ToDoTask)"
+    },
+    {
+      "id": "androidx.room.RoomDatabase.deleteAll()"
+    },
+    {
+      "id": "androidx.room.RoomDatabase.query(SQLite)"
+    },
+    {
+      "id": "androidx.datastore.preferences.core.edit(DataStore,()->Unit)"
+    },
+    {
+      "id": "com.ayse.todocompose.di.DatabaseModule.provideDatabase(Context)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDatabase.getInstance(Context)"
+    },
+    {
+      "id": "com.ayse.todocompose.di.DatabaseModule.provideDao(ToDoDatabase)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.ToDoDatabase.toDoDao()"
+    },
+    {
+      "id": "com.ayse.todocompose.di.DatabaseModule.provideRepository(ToDoDao,DataStoreRepository)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.repository.ToDoRepository.<init>(ToDoDao,DataStoreRepository)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.setMessage(Action,String)"
+    },
+    {
+      "id": "com.ayse.todocompose.ui.screens.list.setActionLabel(Action)"
+    },
+    {
+      "id": "com.ayse.todocompose.data.models.Priority.color()"
+    },
+    {
+      "id": "com.ayse.todocompose.data.models.Priority.valueOf(String)"
+    }
+  ],
+  "links": [
+    {
+      "source": 0,
+      "target": 1,
+      "value": 1
+    },
+    {
+      "source": 0,
+      "target": 2,
+      "value": 1
+    },
+    {
+      "source": 1,
+      "target": 3,
+      "value": 1
+    },
+    {
+      "source": 2,
+      "target": 4,
+      "value": 1
+    },
+    {
+      "source": 4,
+      "target": 5,
+      "value": 1
+    },
+    {
+      "source": 5,
+      "target": 6,
+      "value": 1
+    },
+    {
+      "source": 5,
+      "target": 7,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 8,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 9,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 10,
+      "value": 1
+    },
+    {
+      "source": 10,
+      "target": 11,
+      "value": 1
+    },
+    {
+      "source": 10,
+      "target": 12,
+      "value": 1
+    },
+    {
+      "source": 10,
+      "target": 13,
+      "value": 1
+    },
+    {
+      "source": 10,
+      "target": 14,
+      "value": 1
+    },
+    {
+      "source": 11,
+      "target": 15,
+      "value": 1
+    },
+    {
+      "source": 11,
+      "target": 16,
+      "value": 1
+    },
+    {
+      "source": 16,
+      "target": 17,
+      "value": 1
+    },
+    {
+      "source": 16,
+      "target": 18,
+      "value": 1
+    },
+    {
+      "source": 17,
+      "target": 19,
+      "value": 1
+    },
+    {
+      "source": 17,
+      "target": 20,
+      "value": 1
+    },
+    {
+      "source": 17,
+      "target": 21,
+      "value": 1
+    },
+    {
+      "source": 18,
+      "target": 22,
+      "value": 1
+    },
+    {
+      "source": 18,
+      "target": 23,
+      "value": 1
+    },
+    {
+      "source": 18,
+      "target": 24,
+      "value": 1
+    },
+    {
+      "source": 25,
+      "target": 26,
+      "value": 1
+    },
+    {
+      "source": 27,
+      "target": 26,
+      "value": 1
+    },
+    {
+      "source": 20,
+      "target": 28,
+      "value": 1
+    },
+    {
+      "source": 20,
+      "target": 29,
+      "value": 1
+    },
+    {
+      "source": 20,
+      "target": 30,
+      "value": 1
+    },
+    {
+      "source": 20,
+      "target": 31,
+      "value": 1
+    },
+    {
+      "source": 20,
+      "target": 32,
+      "value": 1
+    },
+    {
+      "source": 32,
+      "target": 33,
+      "value": 1
+    },
+    {
+      "source": 31,
+      "target": 34,
+      "value": 1
+    },
+    {
+      "source": 34,
+      "target": 35,
+      "value": 1
+    },
+    {
+      "source": 34,
+      "target": 36,
+      "value": 1
+    },
+    {
+      "source": 36,
+      "target": 37,
+      "value": 1
+    },
+    {
+      "source": 36,
+      "target": 38,
+      "value": 1
+    },
+    {
+      "source": 38,
+      "target": 39,
+      "value": 1
+    },
+    {
+      "source": 30,
+      "target": 40,
+      "value": 1
+    },
+    {
+      "source": 30,
+      "target": 41,
+      "value": 1
+    },
+    {
+      "source": 40,
+      "target": 42,
+      "value": 1
+    },
+    {
+      "source": 40,
+      "target": 43,
+      "value": 1
+    },
+    {
+      "source": 42,
+      "target": 44,
+      "value": 1
+    },
+    {
+      "source": 42,
+      "target": 45,
+      "value": 1
+    },
+    {
+      "source": 42,
+      "target": 46,
+      "value": 1
+    },
+    {
+      "source": 42,
+      "target": 47,
+      "value": 1
+    },
+    {
+      "source": 45,
+      "target": 48,
+      "value": 1
+    },
+    {
+      "source": 41,
+      "target": 49,
+      "value": 1
+    },
+    {
+      "source": 41,
+      "target": 50,
+      "value": 1
+    },
+    {
+      "source": 41,
+      "target": 51,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 52,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 53,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 54,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 55,
+      "value": 1
+    },
+    {
+      "source": 24,
+      "target": 56,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 57,
+      "value": 1
+    },
+    {
+      "source": 52,
+      "target": 58,
+      "value": 1
+    },
+    {
+      "source": 57,
+      "target": 59,
+      "value": 1
+    },
+    {
+      "source": 57,
+      "target": 60,
+      "value": 1
+    },
+    {
+      "source": 58,
+      "target": 61,
+      "value": 1
+    },
+    {
+      "source": 58,
+      "target": 62,
+      "value": 1
+    },
+    {
+      "source": 62,
+      "target": 63,
+      "value": 1
+    },
+    {
+      "source": 62,
+      "target": 64,
+      "value": 1
+    },
+    {
+      "source": 62,
+      "target": 47,
+      "value": 1
+    },
+    {
+      "source": 53,
+      "target": 65,
+      "value": 1
+    },
+    {
+      "source": 53,
+      "target": 66,
+      "value": 1
+    },
+    {
+      "source": 53,
+      "target": 67,
+      "value": 1
+    },
+    {
+      "source": 53,
+      "target": 68,
+      "value": 1
+    },
+    {
+      "source": 8,
+      "target": 69,
+      "value": 1
+    },
+    {
+      "source": 8,
+      "target": 70,
+      "value": 1
+    },
+    {
+      "source": 69,
+      "target": 71,
+      "value": 1
+    },
+    {
+      "source": 70,
+      "target": 72,
+      "value": 1
+    },
+    {
+      "source": 28,
+      "target": 73,
+      "value": 1
+    },
+    {
+      "source": 28,
+      "target": 74,
+      "value": 1
+    },
+    {
+      "source": 28,
+      "target": 75,
+      "value": 1
+    },
+    {
+      "source": 28,
+      "target": 76,
+      "value": 1
+    },
+    {
+      "source": 73,
+      "target": 77,
+      "value": 1
+    },
+    {
+      "source": 73,
+      "target": 78,
+      "value": 1
+    },
+    {
+      "source": 74,
+      "target": 79,
+      "value": 1
+    },
+    {
+      "source": 74,
+      "target": 80,
+      "value": 1
+    },
+    {
+      "source": 75,
+      "target": 79,
+      "value": 1
+    },
+    {
+      "source": 75,
+      "target": 81,
+      "value": 1
+    },
+    {
+      "source": 76,
+      "target": 82,
+      "value": 1
+    },
+    {
+      "source": 51,
+      "target": 83,
+      "value": 1
+    },
+    {
+      "source": 22,
+      "target": 84,
+      "value": 1
+    },
+    {
+      "source": 43,
+      "target": 85,
+      "value": 1
+    },
+    {
+      "source": 23,
+      "target": 66,
+      "value": 1
+    },
+    {
+      "source": 23,
+      "target": 67,
+      "value": 1
+    },
+    {
+      "source": 23,
+      "target": 68,
+      "value": 1
+    },
+    {
+      "source": 71,
+      "target": 86,
+      "value": 1
+    },
+    {
+      "source": 87,
+      "target": 88,
+      "value": 1
+    },
+    {
+      "source": 89,
+      "target": 90,
+      "value": 1
+    },
+    {
+      "source": 83,
+      "target": 91,
+      "value": 1
+    },
+    {
+      "source": 84,
+      "target": 92,
+      "value": 1
+    },
+    {
+      "source": 78,
+      "target": 93,
+      "value": 1
+    },
+    {
+      "source": 80,
+      "target": 94,
+      "value": 1
+    },
+    {
+      "source": 81,
+      "target": 95,
+      "value": 1
+    },
+    {
+      "source": 82,
+      "target": 96,
+      "value": 1
+    },
+    {
+      "source": 93,
+      "target": 97,
+      "value": 1
+    },
+    {
+      "source": 94,
+      "target": 98,
+      "value": 1
+    },
+    {
+      "source": 95,
+      "target": 99,
+      "value": 1
+    },
+    {
+      "source": 96,
+      "target": 100,
+      "value": 1
+    },
+    {
+      "source": 86,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 88,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 90,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 91,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 92,
+      "target": 101,
+      "value": 1
+    },
+    {
+      "source": 72,
+      "target": 102,
+      "value": 1
+    },
+    {
+      "source": 85,
+      "target": 102,
+      "value": 1
+    },
+    {
+      "source": 103,
+      "target": 104,
+      "value": 1
+    },
+    {
+      "source": 105,
+      "target": 106,
+      "value": 1
+    },
+    {
+      "source": 107,
+      "target": 108,
+      "value": 1
+    },
+    {
+      "source": 29,
+      "target": 109,
+      "value": 1
+    },
+    {
+      "source": 29,
+      "target": 110,
+      "value": 1
+    },
+    {
+      "source": 111,
+      "target": 112,
+      "value": 1
+    }
+  ],
+  "metadata": {
+    "package": "com.ayse.todocompose",
+    "target": "com.ayse.todocompose",
+    "duration": 60.0,
+    "total_edges": 115,
+    "unique_nodes": 113,
+    "unique_links": 115,
+    "source": "static_analysis"
+  }
+}

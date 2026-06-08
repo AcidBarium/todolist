@@ -1,0 +1,34 @@
+  bash arg: -p
+  bash arg: com.ayse.todocompose
+  bash arg: --pct-touch
+  bash arg: 70
+  bash arg: --pct-motion
+  bash arg: 20
+  bash arg: --pct-syskeys
+  bash arg: 10
+  bash arg: -v
+  bash arg: 100
+:Monkey: seed=1780659140183 count=100
+:AllowPackage: com.ayse.todocompose
+:IncludeCategory: android.intent.category.LAUNCHER
+:IncludeCategory: android.intent.category.MONKEY
+// Event percentages:
+//   0: 70.0%
+//   1: 20.0%
+//   2: 0.0%
+//   3: 0.0%
+//   4: -0.0%
+//   5: -0.0%
+//   6: 0.0%
+//   7: 0.0%
+//   8: 10.0%
+//   9: 0.0%
+//   10: 0.0%
+//   11: 0.0%
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=com.ayse.todocompose/.MainActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.ayse.todocompose/.MainActivity } in package com.ayse.todocompose
+Events injected: 100
+:Sending rotation degree=0, persist=false
+:Dropped: keys=0 pointers=0 trackballs=0 flips=0 rotations=0
+## Network stats: elapsed time=845ms (0ms mobile, 0ms wifi, 845ms not connected)
+// Monkey finished

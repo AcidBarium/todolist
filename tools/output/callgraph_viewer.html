@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Call Graph Viewer</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Consolas, monospace; background: #1a1a2e; color: #eee; overflow: hidden; height: 100vh; }
+#container { display: flex; height: 100vh; }
+#sidebar {
+    width: 320px; min-width: 260px; background: #16213e; padding: 16px; overflow-y: auto;
+    border-right: 1px solid #0f3460; flex-shrink: 0;
+}
+#sidebar h2 { font-size: 16px; color: #e94560; margin-bottom: 8px; }
+.stat { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+.stat span { color: #fff; }
+hr.sep { border: none; border-top: 1px solid #0f3460; margin: 12px 0; }
+.search-box { width: 100%; padding: 8px 10px; border: 1px solid #0f3460; border-radius: 4px; background: #1a1a2e; color: #eee; font-size: 13px; }
+.search-box:focus { outline: none; border-color: #e94560; }
+.filter-label { font-size: 11px; color: #aaa; margin-top: 8px; display: block; }
+input[type="range"] { width: 100%; margin: 4px 0 8px; accent-color: #e94560; }
+.btn { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 4px; }
+.btn-primary { background: #e94560; color: #fff; }
+.btn-secondary { background: #0f3460; color: #ddd; }
+.node-list { max-height: 400px; overflow-y: auto; font-size: 11px; margin-top: 8px; }
+.node-item { padding: 3px 6px; cursor: pointer; border-radius: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.node-item:hover { background: #0f3460; }
+.node-item.active { background: #e94560; color: #fff; }
+#graph-container { flex: 1; position: relative; overflow: hidden; background: #1a1a2e; }
+#graph-svg { width: 100%; height: 100%; display: block; }
+#legend { position: absolute; bottom: 16px; right: 16px; background: rgba(22,33,62,0.92); border: 1px solid #0f3460; border-radius: 6px; padding: 8px 12px; font-size: 11px; z-index: 10; }
+#legend .item { display: flex; align-items: center; margin: 3px 0; }
+#legend .color-box { width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; flex-shrink: 0; }
+#loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 16px; color: #e94560; z-index: 5; }
+#info-panel { position: absolute; top: 12px; right: 12px; background: rgba(22,33,62,0.95); border: 1px solid #e94560; border-radius: 6px; padding: 10px 14px; font-size: 12px; z-index: 50; display: none; max-width: 420px; word-break: break-all; max-height: 80vh; overflow-y: auto; }
+#info-panel .close { position: absolute; top: 4px; right: 8px; cursor: pointer; color: #e94560; font-weight: bold; font-size: 16px; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1a1a2e; }
+::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 3px; }
+#debug { position: absolute; bottom: 16px; left: 16px; font-size: 11px; color: #666; z-index: 5; }
+</style>
+</head>
+<body>
+<div id="container">
+    <div id="sidebar">
+        <h2>Call Graph Viewer</h2>
+        <div class="stat">Nodes: <span id="stat-nodes">0</span></div>
+        <div class="stat">Edges: <span id="stat-edges">0</span></div>
+        <div class="stat">Duration: <span id="stat-duration">-</span></div>
+        <div class="stat">Package: <span id="stat-package">-</span></div>
+        <hr class="sep">
+        <label class="filter-label" for="search">Search:</label>
+        <input class="search-box" id="search" type="text" placeholder="e.g. SharedViewModel">
+        <div style="margin-top:8px">
+            <button class="btn btn-primary" id="btn-reset">Reset</button>
+            <button class="btn btn-secondary" id="btn-center">Fit</button>
+        </div>
+        <hr class="sep">
+        <div class="node-list" id="node-list"></div>
+    </div>
+    <div id="graph-container">
+        <div id="loading">Loading...</div>
+        <svg id="graph-svg"></svg>
+        <div id="legend"></div>
+        <div id="info-panel"><span class="close" id="info-close">x</span><div id="info-content"></div></div>
+        <div id="debug"></div>
+    </div>
+</div>
+<script>
+var EMBEDDED_GRAPH_DATA = {"nodes": [{"id": "_ROOT_"}, {"id": "com.ayse.todocompose.Hilt_ToDoApplication.onCreate()"}, {"id": "com.ayse.todocompose.Hilt_MainActivity._initHiltInternal()"}, {"id": "com.ayse.todocompose.ToDoApplication.onCreate()"}, {"id": "com.ayse.todocompose.Hilt_MainActivity.onCreate(Bundle)"}, {"id": "com.ayse.todocompose.MainActivity.onCreate(Bundle)"}, {"id": "androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen()"}, {"id": "com.ayse.todocompose.MainActivity.setContent(Composable)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.<init>(ToDoRepository,DataStoreRepository)"}, {"id": "androidx.navigation.compose.rememberNavController()"}, {"id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme(Composable)"}, {"id": "com.ayse.todocompose.navigation.SetupNavigation(NavHostController,SharedViewModel)"}, {"id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.colors()"}, {"id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.typography()"}, {"id": "com.ayse.todocompose.ui.theme.ToDoComposeTheme.shapes()"}, {"id": "com.ayse.todocompose.navigation.Screens.<init>(NavHostController)"}, {"id": "androidx.navigation.compose.NavHost(NavHostController,String,Builder)"}, {"id": "com.ayse.todocompose.navigation.destination.listComposable(NavGraphBuilder,Int->Unit,SharedViewModel)"}, {"id": "com.ayse.todocompose.navigation.destination.taskComposable(NavGraphBuilder,Action->Unit,SharedViewModel)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateAction(Action)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListScreen(Action,Int->Unit,SharedViewModel)"}, {"id": "com.ayse.todocompose.util.toAction(String?)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.getSelectedTask(Int)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTaskFields(ToDoTask?)"}, {"id": "com.ayse.todocompose.ui.screens.task.TaskScreen(ToDoTask?,Action->Unit,SharedViewModel)"}, {"id": "com.ayse.todocompose.navigation.Screens.list(Int)"}, {"id": "androidx.navigation.NavHostController.navigate(String)"}, {"id": "com.ayse.todocompose.navigation.Screens.task(Action)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.handleDatabaseActions(Action)"}, {"id": "com.ayse.todocompose.ui.screens.list.DisplaySnackbar(ScaffoldState,Action->Unit,Action->Unit,String,Action)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListAppBar(SharedViewModel,SearchAppBarState,String)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListContent(RequestState,RequestState,SearchAppBarState,List,List,RequestState,Int->Unit,(Action,ToDoTask)->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListFab(Int->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListFab.onFabClicked(Int)"}, {"id": "com.ayse.todocompose.ui.screens.list.HandleListContent(List,Int->Unit,(Action,ToDoTask)->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.EmptyContent()"}, {"id": "com.ayse.todocompose.ui.screens.list.DisplayTasks(List,Int->Unit,(Action,ToDoTask)->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.RedBackground(Float)"}, {"id": "com.ayse.todocompose.ui.screens.list.TaskItem(ToDoTask,Int->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.TaskItem.navigateToTaskScreen(Int)"}, {"id": "com.ayse.todocompose.ui.screens.list.DefaultListAppBar(()->Unit,Priority->Unit,()->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.SearchAppBar(String,String->Unit,()->Unit,String->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.ListAppBarAction(()->Unit,Priority->Unit,()->Unit)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.persistSortState(Priority)"}, {"id": "com.ayse.todocompose.ui.screens.list.SearchAction(()->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.SortAction(Priority->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.list.DeleteAllAction(()->Unit)"}, {"id": "com.ayse.todocompose.components.DisplayAlertDialog(String,String,Boolean,()->Unit,()->Unit)"}, {"id": "com.ayse.todocompose.components.PriorityItem(Priority)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateSearchTextState(String)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateAppbarState(SearchAppBarState)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.searchDatabase(String)"}, {"id": "com.ayse.todocompose.ui.screens.task.TaskAppBar(ToDoTask?,Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.TaskContent(String,String->Unit,String,String->Unit,Priority,Priority->Unit)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.validateFields()"}, {"id": "com.ayse.todocompose.ui.screens.task.displayToast(Context)"}, {"id": "androidx.activity.compose.BackHandler(Boolean,()->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.NewTaskAppBar(Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.ExistingTaskAppBar(ToDoTask,Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.BackAction(Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.AddAction(Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.CloseAction(Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.ExistingAppBarActions(ToDoTask,Action->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.DeleteAction(()->Unit)"}, {"id": "com.ayse.todocompose.ui.screens.task.UpdateAction(Action->Unit)"}, {"id": "com.ayse.todocompose.components.PriorityDropDown(Priority,Priority->Unit)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTitle(String)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateDescription(String)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updatePriority(Priority)"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.getAllTasks()"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.readSortState()"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.getAllTask()"}, {"id": "com.ayse.todocompose.data.repository.DataStoreRepository.readSortState()"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.addTask()"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.updateTask()"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.deleteTask()"}, {"id": "com.ayse.todocompose.ui.viewModel.SharedViewModel.deleteAllTask()"}, {"id": "com.ayse.todocompose.data.ToDoTask.<init>(String,String,Priority)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.addTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.ToDoTask.<init>(Int,String,String,Priority)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.updateTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.deleteTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.deleteAllTask()"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.searchDatabase(String)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.getSelectedTask(Int)"}, {"id": "com.ayse.todocompose.data.repository.DataStoreRepository.persistSortState(Priority)"}, {"id": "com.ayse.todocompose.data.ToDoDao.getAllTask()"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.sortByLowPriority()"}, {"id": "com.ayse.todocompose.data.ToDoDao.sortByLowPriority()"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.sortByHighPriority()"}, {"id": "com.ayse.todocompose.data.ToDoDao.sortByHighPriority()"}, {"id": "com.ayse.todocompose.data.ToDoDao.searchDatabase(String)"}, {"id": "com.ayse.todocompose.data.ToDoDao.getSelectedTask(Int)"}, {"id": "com.ayse.todocompose.data.ToDoDao.addTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.ToDoDao.updateTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.ToDoDao.deleteTask(ToDoTask)"}, {"id": "com.ayse.todocompose.data.ToDoDao.deleteAllTask()"}, {"id": "androidx.room.RoomDatabase.insert(ToDoTask)"}, {"id": "androidx.room.RoomDatabase.update(ToDoTask)"}, {"id": "androidx.room.RoomDatabase.delete(ToDoTask)"}, {"id": "androidx.room.RoomDatabase.deleteAll()"}, {"id": "androidx.room.RoomDatabase.query(SQLite)"}, {"id": "androidx.datastore.preferences.core.edit(DataStore,()->Unit)"}, {"id": "com.ayse.todocompose.di.DatabaseModule.provideDatabase(Context)"}, {"id": "com.ayse.todocompose.data.ToDoDatabase.getInstance(Context)"}, {"id": "com.ayse.todocompose.di.DatabaseModule.provideDao(ToDoDatabase)"}, {"id": "com.ayse.todocompose.data.ToDoDatabase.toDoDao()"}, {"id": "com.ayse.todocompose.di.DatabaseModule.provideRepository(ToDoDao,DataStoreRepository)"}, {"id": "com.ayse.todocompose.data.repository.ToDoRepository.<init>(ToDoDao,DataStoreRepository)"}, {"id": "com.ayse.todocompose.ui.screens.list.setMessage(Action,String)"}, {"id": "com.ayse.todocompose.ui.screens.list.setActionLabel(Action)"}, {"id": "com.ayse.todocompose.data.models.Priority.color()"}, {"id": "com.ayse.todocompose.data.models.Priority.valueOf(String)"}], "links": [{"source": 0, "target": 1, "value": 1}, {"source": 0, "target": 2, "value": 1}, {"source": 1, "target": 3, "value": 1}, {"source": 2, "target": 4, "value": 1}, {"source": 4, "target": 5, "value": 1}, {"source": 5, "target": 6, "value": 1}, {"source": 5, "target": 7, "value": 1}, {"source": 7, "target": 8, "value": 1}, {"source": 7, "target": 9, "value": 1}, {"source": 7, "target": 10, "value": 1}, {"source": 10, "target": 11, "value": 1}, {"source": 10, "target": 12, "value": 1}, {"source": 10, "target": 13, "value": 1}, {"source": 10, "target": 14, "value": 1}, {"source": 11, "target": 15, "value": 1}, {"source": 11, "target": 16, "value": 1}, {"source": 16, "target": 17, "value": 1}, {"source": 16, "target": 18, "value": 1}, {"source": 17, "target": 19, "value": 1}, {"source": 17, "target": 20, "value": 1}, {"source": 17, "target": 21, "value": 1}, {"source": 18, "target": 22, "value": 1}, {"source": 18, "target": 23, "value": 1}, {"source": 18, "target": 24, "value": 1}, {"source": 25, "target": 26, "value": 1}, {"source": 27, "target": 26, "value": 1}, {"source": 20, "target": 28, "value": 1}, {"source": 20, "target": 29, "value": 1}, {"source": 20, "target": 30, "value": 1}, {"source": 20, "target": 31, "value": 1}, {"source": 20, "target": 32, "value": 1}, {"source": 32, "target": 33, "value": 1}, {"source": 31, "target": 34, "value": 1}, {"source": 34, "target": 35, "value": 1}, {"source": 34, "target": 36, "value": 1}, {"source": 36, "target": 37, "value": 1}, {"source": 36, "target": 38, "value": 1}, {"source": 38, "target": 39, "value": 1}, {"source": 30, "target": 40, "value": 1}, {"source": 30, "target": 41, "value": 1}, {"source": 40, "target": 42, "value": 1}, {"source": 40, "target": 43, "value": 1}, {"source": 42, "target": 44, "value": 1}, {"source": 42, "target": 45, "value": 1}, {"source": 42, "target": 46, "value": 1}, {"source": 42, "target": 47, "value": 1}, {"source": 45, "target": 48, "value": 1}, {"source": 41, "target": 49, "value": 1}, {"source": 41, "target": 50, "value": 1}, {"source": 41, "target": 51, "value": 1}, {"source": 24, "target": 52, "value": 1}, {"source": 24, "target": 53, "value": 1}, {"source": 24, "target": 54, "value": 1}, {"source": 24, "target": 55, "value": 1}, {"source": 24, "target": 56, "value": 1}, {"source": 52, "target": 57, "value": 1}, {"source": 52, "target": 58, "value": 1}, {"source": 57, "target": 59, "value": 1}, {"source": 57, "target": 60, "value": 1}, {"source": 58, "target": 61, "value": 1}, {"source": 58, "target": 62, "value": 1}, {"source": 62, "target": 63, "value": 1}, {"source": 62, "target": 64, "value": 1}, {"source": 62, "target": 47, "value": 1}, {"source": 53, "target": 65, "value": 1}, {"source": 53, "target": 66, "value": 1}, {"source": 53, "target": 67, "value": 1}, {"source": 53, "target": 68, "value": 1}, {"source": 8, "target": 69, "value": 1}, {"source": 8, "target": 70, "value": 1}, {"source": 69, "target": 71, "value": 1}, {"source": 70, "target": 72, "value": 1}, {"source": 28, "target": 73, "value": 1}, {"source": 28, "target": 74, "value": 1}, {"source": 28, "target": 75, "value": 1}, {"source": 28, "target": 76, "value": 1}, {"source": 73, "target": 77, "value": 1}, {"source": 73, "target": 78, "value": 1}, {"source": 74, "target": 79, "value": 1}, {"source": 74, "target": 80, "value": 1}, {"source": 75, "target": 79, "value": 1}, {"source": 75, "target": 81, "value": 1}, {"source": 76, "target": 82, "value": 1}, {"source": 51, "target": 83, "value": 1}, {"source": 22, "target": 84, "value": 1}, {"source": 43, "target": 85, "value": 1}, {"source": 23, "target": 66, "value": 1}, {"source": 23, "target": 67, "value": 1}, {"source": 23, "target": 68, "value": 1}, {"source": 71, "target": 86, "value": 1}, {"source": 87, "target": 88, "value": 1}, {"source": 89, "target": 90, "value": 1}, {"source": 83, "target": 91, "value": 1}, {"source": 84, "target": 92, "value": 1}, {"source": 78, "target": 93, "value": 1}, {"source": 80, "target": 94, "value": 1}, {"source": 81, "target": 95, "value": 1}, {"source": 82, "target": 96, "value": 1}, {"source": 93, "target": 97, "value": 1}, {"source": 94, "target": 98, "value": 1}, {"source": 95, "target": 99, "value": 1}, {"source": 96, "target": 100, "value": 1}, {"source": 86, "target": 101, "value": 1}, {"source": 88, "target": 101, "value": 1}, {"source": 90, "target": 101, "value": 1}, {"source": 91, "target": 101, "value": 1}, {"source": 92, "target": 101, "value": 1}, {"source": 72, "target": 102, "value": 1}, {"source": 85, "target": 102, "value": 1}, {"source": 103, "target": 104, "value": 1}, {"source": 105, "target": 106, "value": 1}, {"source": 107, "target": 108, "value": 1}, {"source": 29, "target": 109, "value": 1}, {"source": 29, "target": 110, "value": 1}, {"source": 111, "target": 112, "value": 1}], "metadata": {"package": "com.ayse.todocompose", "target": "com.ayse.todocompose", "duration": 60.0, "total_edges": 115, "unique_nodes": 113, "unique_links": 115, "source": "static_analysis"}};
+
+var graphData = null;
+var nodeMap = {};
+var groups = [];
+
+var COLORS = ['#e94560','#16c79a','#f2a900','#6c5ce7','#00b894','#fd79a8','#e17055','#0984e3','#00cec9','#d63031','#74b9ff','#a29bfe','#ffeaa7','#55efc4','#81ecec'];
+
+function getGroup(id) {
+    var p = id.indexOf('(');
+    var n = p > 0 ? id.substring(0, p) : id;
+    var pts = n.split('.');
+    if (pts.length >= 5) return pts.slice(0, 4).join('.');
+    return pts.length >= 3 ? pts.slice(0, -1).join('.') : id;
+}
+function getName(id) {
+    var p = id.indexOf('(');
+    var n = p > 0 ? id.substring(0, p) : id;
+    return n.lastIndexOf('.') > 0 ? n.substring(n.lastIndexOf('.') + 1) : n;
+}
+
+function gColor(g) {
+    var i = groups.indexOf(g);
+    if (i < 0) i = groups.length;
+    return COLORS[i % COLORS.length];
+}
+
+function loadData() {
+    if (typeof EMBEDDED_GRAPH_DATA !== 'undefined') {
+        document.getElementById('debug').textContent = 'Using embedded data';
+        return EMBEDDED_GRAPH_DATA;
+    }
+    var xhr = new XMLHttpRequest();
+    try {
+        xhr.open('GET', 'callgraph.json', false);
+        xhr.send();
+        if (xhr.status === 200) return JSON.parse(xhr.responseText);
+    } catch(e) {}
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function() {
+        var r = new FileReader();
+        r.onload = function() { render(JSON.parse(r.result)); };
+        r.readAsText(input.files[0]);
+    };
+    document.getElementById('graph-container').appendChild(input);
+    document.getElementById('loading').textContent = 'Click to select callgraph.json';
+    input.click();
+    return null;
+}
+
+var svg, W, H;
+var g, linkGroup, nodeGroup;
+
+function initSvg() {
+    svg = document.getElementById('graph-svg');
+    var ns = 'http://www.w3.org/2000/svg';
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var defs = document.createElementNS(ns, 'defs');
+    var marker = document.createElementNS(ns, 'marker');
+    marker.setAttribute('id', 'arrow');
+    marker.setAttribute('viewBox', '0 -5 10 10');
+    marker.setAttribute('refX', '20');
+    marker.setAttribute('refY', '0');
+    marker.setAttribute('markerWidth', '8');
+    marker.setAttribute('markerHeight', '8');
+    marker.setAttribute('orient', 'auto');
+    var arrowPath = document.createElementNS(ns, 'path');
+    arrowPath.setAttribute('d', 'M0,-5L10,0L0,5');
+    arrowPath.setAttribute('fill', '#888');
+    marker.appendChild(arrowPath);
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+
+    g = document.createElementNS(ns, 'g');
+    svg.appendChild(g);
+    linkGroup = document.createElementNS(ns, 'g');
+    g.appendChild(linkGroup);
+    nodeGroup = document.createElementNS(ns, 'g');
+    g.appendChild(nodeGroup);
+    document.getElementById('loading').style.display = 'none';
+}
+
+function render(data) {
+    graphData = data;
+    if (!graphData || !graphData.nodes) { document.getElementById('debug').textContent = 'No data'; return; }
+
+    var meta = graphData.metadata || {};
+    document.getElementById('stat-nodes').textContent = graphData.nodes.length;
+    document.getElementById('stat-edges').textContent = graphData.links.length;
+    document.getElementById('stat-duration').textContent = (meta.duration || '-') + 's';
+    document.getElementById('stat-package').textContent = meta.package || '-';
+
+    var gs = {};
+    graphData.nodes.forEach(function(n) { gs[getGroup(n.id)] = true; });
+    groups = Object.keys(gs);
+    document.getElementById('legend').innerHTML = groups.slice(0, 15).map(function(g) {
+        return '<div class="item"><span class="color-box" style="background:'+gColor(g)+'"></span>'+g+'</div>';
+    }).join('');
+
+    initSvg();
+    layout();
+    updateSidebar();
+}
+
+var nodes = [], links = [];
+
+function layout() {
+    var container = document.getElementById('graph-container');
+    W = container.clientWidth || 800;
+    H = container.clientHeight || 600;
+
+    nodeMap = {};
+    nodes = [];
+    links = [];
+
+    var used = {};
+    graphData.links.forEach(function(l) {
+        var s = typeof l.source === 'object' ? l.source : l.source;
+        var t = typeof l.target === 'object' ? l.target : l.target;
+        var sId = (typeof s === 'number') ? graphData.nodes[s].id : s;
+        var tId = (typeof t === 'number') ? graphData.nodes[t].id : t;
+        used[sId] = true;
+        used[tId] = true;
+    });
+
+    graphData.nodes.forEach(function(n) {
+        if (used[n.id]) {
+            nodes.push({ id: n.id, x: Math.random() * 800 - 400, y: Math.random() * 600 - 300, vx: 0, vy: 0 });
+            nodeMap[n.id] = nodes[nodes.length - 1];
+        }
+    });
+
+    graphData.links.forEach(function(l) {
+        var s = typeof l.source === 'object' ? l.source : l.source;
+        var t = typeof l.target === 'object' ? l.target : l.target;
+        var sId = (typeof s === 'number') ? graphData.nodes[s].id : s;
+        var tId = (typeof t === 'number') ? graphData.nodes[t].id : t;
+        if (nodeMap[sId] && nodeMap[tId]) links.push({ source: nodeMap[sId], target: nodeMap[tId], value: l.value || 1 });
+    });
+
+    document.getElementById('debug').textContent = 'Nodes: ' + nodes.length + ' | Links: ' + links.length;
+    runSimulation();
+    draw();
+}
+
+function runSimulation() {
+    for (var iter = 0; iter < 300; iter++) {
+        var alpha = 1 - iter / 300;
+        for (var i = 0; i < nodes.length; i++) {
+            for (var j = i + 1; j < nodes.length; j++) {
+                var dx = nodes[j].x - nodes[i].x;
+                var dy = nodes[j].y - nodes[i].y;
+                var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                var force = 5000 / (dist * dist) * alpha;
+                nodes[i].vx -= (dx / dist) * force;
+                nodes[i].vy -= (dy / dist) * force;
+                nodes[j].vx += (dx / dist) * force;
+                nodes[j].vy += (dy / dist) * force;
+            }
+        }
+        for (i = 0; i < links.length; i++) {
+            var l = links[i];
+            dx = l.target.x - l.source.x;
+            dy = l.target.y - l.source.y;
+            dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            force = (dist - 80) * 0.1 * alpha;
+            l.source.vx += (dx / dist) * force;
+            l.source.vy += (dy / dist) * force;
+            l.target.vx -= (dx / dist) * force;
+            l.target.vy -= (dy / dist) * force;
+        }
+        var cx = 0, cy = 0;
+        nodes.forEach(function(n) { cx += n.x; cy += n.y; });
+        cx /= nodes.length; cy /= nodes.length;
+        for (i = 0; i < nodes.length; i++) {
+            nodes[i].vx += (cx - nodes[i].x) * 0.01;
+            nodes[i].vy += (cy - nodes[i].y) * 0.01;
+            nodes[i].vx *= 0.9;
+            nodes[i].vy *= 0.9;
+            nodes[i].x += nodes[i].vx;
+            nodes[i].y += nodes[i].vy;
+        }
+    }
+}
+
+function draw() {
+    var ns = 'http://www.w3.org/2000/svg';
+    while (linkGroup.firstChild) linkGroup.removeChild(linkGroup.firstChild);
+    while (nodeGroup.firstChild) nodeGroup.removeChild(nodeGroup.firstChild);
+
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    nodes.forEach(function(n) {
+        if (n.x < minX) minX = n.x; if (n.y < minY) minY = n.y;
+        if (n.x > maxX) maxX = n.x; if (n.y > maxY) maxY = n.y;
+    });
+    var rangeX = maxX - minX || 1;
+    var rangeY = maxY - minY || 1;
+    var pad = 80;
+
+    nodes.forEach(function(n) {
+        n.sx = (n.x - minX) / rangeX * (W - pad * 2) + pad;
+        n.sy = (n.y - minY) / rangeY * (H - pad * 2) + pad;
+    });
+
+    links.forEach(function(l) {
+        var line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', l.source.sx);
+        line.setAttribute('y1', l.source.sy);
+        line.setAttribute('x2', l.target.sx);
+        line.setAttribute('y2', l.target.sy);
+        line.setAttribute('stroke', 'rgba(150,150,150,0.3)');
+        line.setAttribute('stroke-width', Math.max(0.5, Math.min(3, l.value * 0.4)));
+        line.setAttribute('marker-end', 'url(#arrow)');
+        linkGroup.appendChild(line);
+    });
+
+    nodes.forEach(function(n) {
+        var g = document.createElementNS(ns, 'g');
+        var circle = document.createElementNS(ns, 'circle');
+        circle.setAttribute('cx', n.sx);
+        circle.setAttribute('cy', n.sy);
+        circle.setAttribute('r', 5);
+        circle.setAttribute('fill', gColor(getGroup(n.id)));
+        circle.setAttribute('stroke', 'rgba(255,255,255,0.6)');
+        circle.setAttribute('stroke-width', '1.5');
+        g.appendChild(circle);
+
+        var text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', n.sx);
+        text.setAttribute('y', n.sy - 10);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#ccc');
+        text.setAttribute('font-size', '10px');
+        text.setAttribute('font-family', 'Segoe UI, sans-serif');
+        text.textContent = getName(n.id);
+        g.appendChild(text);
+
+        g.style.cursor = 'pointer';
+        g.addEventListener('click', function() { showInfo(n); });
+        g.addEventListener('mouseenter', function() {
+            circle.setAttribute('stroke', '#e94560');
+            circle.setAttribute('stroke-width', '2.5');
+        });
+        g.addEventListener('mouseleave', function() {
+            circle.setAttribute('stroke', 'rgba(255,255,255,0.6)');
+            circle.setAttribute('stroke-width', '1.5');
+        });
+
+        nodeGroup.appendChild(g);
+    });
+
+    document.getElementById('debug').textContent =
+        'Nodes: ' + nodes.length + ' | Edges: ' + links.length + ' | Size: ' + W + 'x' + H;
+}
+
+function showInfo(n) {
+    var callers = [], callees = [];
+    links.forEach(function(l) {
+        if (l.target === n) callers.push(l.source.id + ' (x' + l.value + ')');
+        if (l.source === n) callees.push(l.target.id + ' (x' + l.value + ')');
+    });
+    var info = '<b style="color:#e94560">' + n.id + '</b><br><br>';
+    info += 'Callers: ' + callers.length + ' | Callees: ' + callees.length + '<br>';
+    if (callers.length > 0) info += '<br><b style="color:#16c79a">&larr; Callers:</b><br>' + callers.join('<br>');
+    if (callees.length > 0) info += '<br><br><b style="color:#f2a900">&rarr; Callees:</b><br>' + callees.join('<br>');
+    document.getElementById('info-content').innerHTML = info;
+    document.getElementById('info-panel').style.display = 'block';
+}
+
+function updateSidebar() {
+    var list = document.getElementById('node-list');
+    var sorted = nodes.slice().sort(function(a, b) {
+        var da = links.filter(function(l) { return l.source === a || l.target === a; }).length;
+        var db = links.filter(function(l) { return l.source === b || l.target === b; }).length;
+        return db - da;
+    });
+    list.innerHTML = sorted.map(function(n) {
+        return '<div class="node-item" data-id="' + n.id.replace(/"/g, '&quot;') + '">' + getName(n.id) + ' <span style="color:#666;font-size:9px">(' + getGroup(n.id) + ')</span></div>';
+    }).join('');
+    list.querySelectorAll('.node-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var found = nodeMap[el.dataset.id];
+            if (found) { showInfo(found); }
+            document.querySelectorAll('.node-item').forEach(function(e) { e.classList.remove('active'); });
+            el.classList.add('active');
+        });
+    });
+}
+
+function init() {
+    var data = loadData();
+    if (data) render(data);
+
+    document.getElementById('btn-reset').addEventListener('click', function() {
+        document.getElementById('search').value = '';
+        document.getElementById('info-panel').style.display = 'none';
+        layout();
+        updateSidebar();
+    });
+
+    document.getElementById('btn-center').addEventListener('click', function() {
+        layout();
+        updateSidebar();
+    });
+
+    document.getElementById('search').addEventListener('input', function() {
+        var q = this.value.toLowerCase();
+        var items = document.querySelectorAll('.node-item');
+        items.forEach(function(el) {
+            el.style.display = el.textContent.toLowerCase().indexOf(q) >= 0 ? '' : 'none';
+        });
+    });
+
+    document.getElementById('info-close').addEventListener('click', function() {
+        document.getElementById('info-panel').style.display = 'none';
+    });
+
+    window.addEventListener('resize', function() {
+        W = document.getElementById('graph-container').clientWidth || 800;
+        H = document.getElementById('graph-container').clientHeight || 600;
+        if (nodes.length > 0) draw();
+    });
+}
+
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
