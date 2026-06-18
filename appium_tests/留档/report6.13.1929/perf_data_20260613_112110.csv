@@ -1,0 +1,9 @@
+Metric,Value
+Cold Start (ms),1325
+Warm Start (ms),95
+Memory PSS (KB),PSS:
+CPU (%),0
+Frames Rendered,6
+Janky Frames,3
+P50 Frame Time (ms),44
+P90 Frame Time (ms),1000
